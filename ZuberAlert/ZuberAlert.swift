@@ -10,7 +10,7 @@ let SCREEN_WIDTH:CGFloat = UIScreen.mainScreen().bounds.size.width  //屏幕宽�
 let SCREEN_HEIGHT:CGFloat = UIScreen.mainScreen().bounds.size.height
 let MAIN_COLOR = UIColor(red: 52/255.0, green: 197/255.0, blue:
     170/255.0, alpha: 1.0)
-public class ZuberAlert: UIViewController {
+class ZuberAlert: UIViewController {
 
     let kBakcgroundTansperancy: CGFloat = 0.7
     let kHeightMargin: CGFloat = 10.0
@@ -27,6 +27,7 @@ public class ZuberAlert: UIViewController {
     var subTitleTextView = UITextView()
     var buttons: [UIButton] = []
     var strongSelf:ZuberAlert?
+    var userAction:((button: UIButton) -> Void)? = nil
     
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -39,7 +40,7 @@ public class ZuberAlert: UIViewController {
         strongSelf = self
     }
     
-    required public init(coder aDecoder: NSCoder) {
+    required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -144,14 +145,12 @@ public class ZuberAlert: UIViewController {
                 self.contentView.transform = CGAffineTransformIdentity
             }, completion: nil)
     }
-    
-     var userAction:((button: UIButton) -> Void)? = nil
 }
 
 extension ZuberAlert{
     
    //MARK: -alert 方法主体
-   public func showAlert(title: String, subTitle: String?,buttonTitle: String ,otherButtonTitle:String?,action:((OtherButton: UIButton) -> Void)) {
+   func showAlert(title: String, subTitle: String?,buttonTitle: String ,otherButtonTitle:String?,action:((OtherButton: UIButton) -> Void)) {
         userAction = action
         let window: UIWindow = UIApplication.sharedApplication().keyWindow!
             window.addSubview(view)
@@ -189,7 +188,7 @@ extension ZuberAlert{
     }
 
    //MARK: -取消
-   public func doCancel(sender:UIButton){
+   func doCancel(sender:UIButton){
  
         UIView.animateWithDuration(0.5, delay: 0.0, options: UIViewAnimationOptions.CurveEaseOut, animations: { () -> Void in
             self.view.alpha = 0.0
@@ -202,11 +201,11 @@ extension ZuberAlert{
         }
     }
     
-    func cleanUpAlert() {
+    private func cleanUpAlert() {
         self.contentView.removeFromSuperview()
         self.contentView = UIView()
     }
-  public  func pressed(sender: UIButton!) {
+   func pressed(sender: UIButton!) {
         if userAction !=  nil {
             userAction!(button:sender)
         }
